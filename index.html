@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>NequiBotGV - Generador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100vw; height: 100vh;
+      background: #fff;
+      font-family: 'Manrope', sans-serif;
+      overflow: hidden;
+    }
+    .formulario {
+      width: 100vw; height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      overflow-y: auto;
+    }
+    .titulo {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .info {
+      background: #e8f9fd;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 390px;
+    }
+    .input-campo, select {
+      width: 100%;
+      max-width: 390px;
+      padding: 14px;
+      border: none;
+      background: #fdf1fb;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+    .simulador {
+      width: 100%;
+      max-width: 390px;
+      padding: 14px;
+      background: #fdf1fb;
+      border-radius: 10px;
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .simulador::after {
+      content: '\276F';
+      font-size: 16px;
+      color: #888;
+    }
+    .favorito {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid #eee;
+      width: 100%;
+      max-width: 390px;
+    }
+    .favorito input[type="checkbox"] {
+      margin-left: auto;
+      transform: scale(1.4);
+    }
+    .fuente {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #c600a1;
+      width: 100%;
+      max-width: 390px;
+    }
+    .fuente-opcion {
+      display: flex;
+      align-items: center;
+      background: #fdf1fb;
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 390px;
+    }
+    .fuente-opcion img {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+    .boton {
+      background: #f59bc2;
+      color: white;
+      width: 100%;
+      max-width: 390px;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .container {
+      position:relative; width:100%; max-width:390px;
+      margin:20px auto; background:#fff; overflow:visible;
+      display:none; transform-origin:top left; transform:scale(1);
+    }
+    .container img { width:100%; display:block; }
+    .input-overlay {
+      position:absolute;
+      background:transparent;
+      border:none;
+      font-size:14px;
+      color:#3C114B;
+      font-weight:500;
+      text-align:left;
+      font-family: 'Manrope', sans-serif;
+      outline:none;
+      pointer-events:none;
+      line-height:1.4;
+      padding-bottom:3px;
+      padding-top:1px;
+      height:auto;
+    }
+    #nombre      { top:calc(413px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); line-height:1.6; }
+    #valor       { top:calc(463px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
+    #fecha       { top:calc(510px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
+    #nequi       { top:calc(602px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
+    #referencia  { top:calc(650px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
+    #bancolombia { top:calc(555px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
+    #disponible  { top:calc(700px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
+    #verPantallaCompleta {
+      display:none; position:fixed; bottom:20px; left:50%;
+      transform:translateX(-50%); padding:12px 20px;
+      font-size:16px; background:#1e88e5; color:#fff;
+      border:none; border-radius:12px; font-weight:bold; z-index:9999;
+      font-family: 'Manrope', sans-serif;
+    }
+    #cargando {
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(0,0,0,.8); color:#fff;
+      padding:20px; border-radius:10px;
+      font-size:18px; font-weight:bold; display:none; z-index:9999;
+      font-family: 'Manrope', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="formulario" id="pantalla">
+    <div class="titulo">Envía a Bancolombia</div>
+    <div class="info">¡Los envíos a Bancolombia <strong>no tienen costo y llegan de una!</strong></div>
+    <input type="text" id="input-nombre" class="input-campo" placeholder="Nombre completo (2 nombres y 2 apellidos)">
+    <div id="input-tipo" class="simulador">Tipo de cuenta</div>
+    <input type="text" id="input-nequi" class="input-campo" placeholder="Número Bancolombia (15 dígitos)" maxlength="15">
+    <input type="text" id="input-valor" class="input-campo" placeholder="Valor en $">
+    <div class="favorito">
+      <span>☆ Recordar en favoritos</span>
+      <input type="checkbox">
+    </div>
+    <div class="fuente">Escoge de donde saldrá la plata</div>
+    <div class="fuente-opcion">
+      <img src="https://img.icons8.com/ios-filled/50/da0081/grid-2.png" alt="icono">
+      Disponible
+    </div>
+    <button id="generar" class="boton">Generar Comprobante</button>
+  </div>
+  <div class="container" id="captura">
+    <img src="comprobante_base.png" alt="Fondo" id="imagen-fondo">
+    <input type="text" id="nombre" class="input-overlay" readonly>
+    <input type="text" id="valor" class="input-overlay" readonly>
+    <div id="fecha" class="input-overlay"></div>
+    <input type="text" id="nequi" class="input-overlay" readonly>
+    <input type="text" id="referencia" class="input-overlay" readonly>
+    <div id="bancolombia" class="input-overlay">Bancolombia</div>
+    <div id="disponible" class="input-overlay">Disponible</div>
+  </div>
+  <button id="verPantallaCompleta">Ver en Pantalla Completa</button>
+  <div id="cargando">Cargando...</div>
+  <script>
+    document.getElementById('input-tipo').addEventListener('click', () => {
+      const opciones = ['Ahorros', 'Corriente'];
+      const actual = document.getElementById('input-tipo').textContent.trim();
+      const siguiente = opciones[(opciones.indexOf(actual) + 1) % opciones.length] || opciones[0];
+      document.getElementById('input-tipo').textContent = siguiente;
+    });
+
+    document.getElementById('generar').addEventListener('click', async () => {
+      if (!validarEntradas()) return;
+      document.getElementById('cargando').style.display = 'block';
+      await (document.fonts?.ready ?? new Promise(r => setTimeout(r,1000)));
+      setTimeout(() => {
+        document.getElementById('cargando').style.display = 'none';
+        const cont = document.getElementById('captura');
+        const escala = Math.min(window.innerWidth/390,1);
+        cont.style.setProperty('--escala', escala);
+        document.getElementById('pantalla').style.display = 'none';
+        cont.style.display = 'block';
+        document.getElementById('nombre').value = document.getElementById('input-nombre').value;
+        document.getElementById('valor').value = formatValor(document.getElementById('input-valor').value);
+        generarFecha();
+        document.getElementById('nequi').value = document.getElementById('input-nequi').value;
+        generarReferencia();
+        document.getElementById('verPantallaCompleta').style.display = 'block';
+      },1000);
+    });
+
+    document.getElementById('verPantallaCompleta').addEventListener('click', () => {
+      const cont = document.getElementById('captura');
+      const btn  = document.getElementById('verPantallaCompleta');
+      if (!document.fullscreenElement) {
+        (cont.requestFullscreen?.() || cont.webkitRequestFullscreen?.());
+        const escala = Math.min(window.innerWidth/390,1);
+        cont.style.transform = `scale(${1/escala})`;
+        btn.textContent = "Salir de Pantalla Completa";
+      } else {
+        (document.exitFullscreen?.() || document.webkitExitFullscreen?.());
+        cont.style.transform = 'scale(1)';
+        btn.textContent = "Ver en Pantalla Completa";
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      const cont = document.getElementById('captura');
+      const btn  = document.getElementById('verPantallaCompleta');
+      if (!document.fullscreenElement) {
+        cont.style.transform = 'scale(1)';
+        btn.textContent = "Ver en Pantalla Completa";
+      }
+    });
+
+    function validarEntradas() {
+      const n  = document.getElementById('input-nombre').value.trim();
+      const ne = document.getElementById('input-nequi').value.trim();
+      const v  = document.getElementById('input-valor').value.trim();
+      if (!n||!ne||!v) { alert("Todos los campos son obligatorios."); return false; }
+      if (isNaN(v.replace(/\D/g,''))) { alert("El valor debe ser un número válido."); return false; }
+      if (ne.length<10||ne.length>15) { alert("El número debe tener entre 10 y 15 dígitos."); return false; }
+      return true;
+    }
+    function generarFecha() {
+      const f=new Date(), d=f.getDate();
+      const m=f.toLocaleString('es-ES',{month:'long'});
+      let h=f.getHours(), min=f.getMinutes().toString().padStart(2,'0');
+      const ap = h>=12?'P. M.':'A. M.'; h=h%12||12;
+      document.getElementById('fecha').innerHTML = `${d} de ${m.charAt(0).toUpperCase()+m.slice(1)} de ${f.getFullYear()}, ${h}:${min} ${ap}`;
+    }
+    function generarReferencia() {
+      document.getElementById('referencia').value = 'M' + Math.floor(1e7 + Math.random()*9e7);
+    }
+    function formatValor(v) {
+      v = v.replace(/\D/g,'');
+      return v ? `$ ${v.replace(/\B(?=(\d{3})+(?!\d))/g,'.')},00` : "$ 0,00";
+    }
+  </script>
+</body>
+</html>
