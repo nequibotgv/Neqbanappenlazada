@@ -6,271 +6,273 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0; padding: 0;
-      width: 100vw; height: 100vh;
-      background: #fff;
-      font-family: 'Manrope', sans-serif;
-      overflow: hidden;
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;padding:0;width:100vw;height:100vh;background:#fff;
+      font-family:'Manrope',sans-serif;overscroll-behavior:none;color:#200020
     }
-    .formulario {
-      width: 100vw; height: 100vh;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: #fff;
-      overflow-y: auto;
+
+    /* ===== Formulario ===== */
+    .formulario{
+      width:100vw;height:100vh;padding:20px;display:flex;flex-direction:column;align-items:center;
+      background:#fff;overflow-y:auto
     }
-    .titulo {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .titulo{font-size:24px;font-weight:700;margin-bottom:10px}
+    .info{background:#e8f9fd;padding:10px;font-size:14px;border-radius:10px;margin-bottom:20px;width:100%;max-width:390px}
+    .input-campo, select{
+      width:100%;max-width:390px;padding:14px;border:none;background:#fdf1fb;margin-bottom:15px;
+      font-size:16px;border-radius:10px;outline:none
     }
-    .info {
-      background: #e8f9fd;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      width: 100%;
-      max-width: 390px;
+    .simulador{
+      width:100%;max-width:390px;padding:14px;background:#fdf1fb;border-radius:10px;font-size:16px;color:#888;
+      margin-bottom:15px;border:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;cursor:pointer
     }
-    .input-campo, select {
-      width: 100%;
-      max-width: 390px;
-      padding: 14px;
-      border: none;
-      background: #fdf1fb;
-      margin-bottom: 15px;
-      font-size: 16px;
-      border-radius: 10px;
+    .simulador::after{content:'\276F';font-size:16px;color:#888}
+    .favorito{display:flex;align-items:center;margin-bottom:20px;background:#fff;border-radius:12px;padding:10px;border:1px solid #eee;width:100%;max-width:390px}
+    .favorito input[type="checkbox"]{margin-left:auto;transform:scale(1.4)}
+    .fuente{font-weight:600;font-size:16px;margin-bottom:10px;color:#c600a1;width:100%;max-width:390px}
+    .fuente-opcion{display:flex;align-items:center;background:#fdf1fb;border-radius:12px;padding:12px;cursor:pointer;font-weight:500;margin-bottom:30px;width:100%;max-width:390px}
+    .fuente-opcion img{width:24px;height:24px;margin-right:10px}
+    .boton{background:#f59bc2;color:#fff;width:100%;max-width:390px;border:none;padding:16px;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
+
+    /* ===== Animación diamantes (BLANCO) ===== */
+    .finish-overlay{
+      position:fixed;inset:0;background:#fff;display:none;align-items:center;justify-content:center;flex-direction:column;gap:24px;
+      z-index:1200
     }
-    .simulador {
-      width: 100%;
-      max-width: 390px;
-      padding: 14px;
-      background: #fdf1fb;
-      border-radius: 10px;
-      font-size: 16px;
-      color: #888;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
+    .diamantes{position:relative;width:160px;height:120px}
+    .diamond{
+      position:absolute;width:70px;height:70px;background:#da0081;border-radius:12px;transform:rotate(45deg) scale(0);
+      animation:pop .8s ease forwards;box-shadow:0 8px 28px rgba(218,0,129,.35)
     }
-    .simulador::after {
-      content: '\276F';
-      font-size: 16px;
-      color: #888;
+    .diamond.left{left:12px;top:25px}
+    .diamond.right{left:78px;top:25px;animation-delay:.15s}
+    .spark{position:absolute;width:10px;height:10px;background:#ffb9e1;border-radius:2px;transform:rotate(45deg) scale(0);animation:spark .9s ease forwards .3s}
+    .spark.s1{left:4px;top:-6px}.spark.s2{right:-8px;top:0}.spark.s3{left:40px;bottom:-10px}
+    @keyframes pop{0%{transform:rotate(45deg) scale(0)}55%{transform:rotate(45deg) scale(1.08)}100%{transform:rotate(45deg) scale(1)}}
+    @keyframes spark{0%{transform:rotate(45deg) scale(0);opacity:0}60%{transform:rotate(45deg) scale(1.4);opacity:1}100%{transform:rotate(45deg) scale(.9);opacity:0}}
+
+    /* ===== Visor comprobante (NEGRO, fijo) ===== */
+    #captura.viewer{
+      display:none;position:fixed;inset:0;background:#000;z-index:1100;overflow:hidden;touch-action:none
     }
-    .favorito {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 10px;
-      border: 1px solid #eee;
-      width: 100%;
-      max-width: 390px;
+    .stage{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1);transform-origin:center center;width:390px
     }
-    .favorito input[type="checkbox"] {
-      margin-left: auto;
-      transform: scale(1.4);
+    .bg{display:block;width:390px;height:auto;user-select:none;-webkit-user-drag:none;pointer-events:none}
+    .bottom-edge-mask{position:absolute;left:0;right:0;bottom:0;height:14px;background:#000;z-index:5;pointer-events:none}
+
+    /* ===== Capas sobrepuestas FIJAS (px exactos) ===== */
+    .input-overlay{
+      position:absolute;background:transparent;border:none;font-size:14px;color:#3C114B;font-weight:500;
+      text-align:left;font-family:'Manrope',sans-serif;pointer-events:none;line-height:1.4
     }
-    .fuente {
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: #c600a1;
-      width: 100%;
-      max-width: 390px;
-    }
-    .fuente-opcion {
-      display: flex;
-      align-items: center;
-      background: #fdf1fb;
-      border-radius: 12px;
-      padding: 12px;
-      cursor: pointer;
-      font-weight: 500;
-      margin-bottom: 30px;
-      width: 100%;
-      max-width: 390px;
-    }
-    .fuente-opcion img {
-      width: 24px;
-      height: 24px;
-      margin-right: 10px;
-    }
-    .boton {
-      background: #f59bc2;
-      color: white;
-      width: 100%;
-      max-width: 390px;
-      border: none;
-      padding: 16px;
-      border-radius: 12px;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .container {
-      position:relative; width:100%; max-width:390px;
-      margin:20px auto; background:#fff; overflow:visible;
-      display:none; transform-origin:top left; transform:scale(1);
-    }
-    .container img { width:100%; display:block; }
-    .input-overlay {
-      position:absolute;
-      background:transparent;
-      border:none;
-      font-size:14px;
-      color:#3C114B;
-      font-weight:500;
-      text-align:left;
-      font-family: 'Manrope', sans-serif;
-      outline:none;
-      pointer-events:none;
-      line-height:1.4;
-      padding-bottom:3px;
-      padding-top:1px;
-      height:auto;
-    }
-    #nombre      { top:calc(415px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); line-height:1.6; }
-    #valor       { top:calc(467px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
-    #fecha       { top:calc(510px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
-    #nequi       { top:calc(607px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
-    #referencia  { top:calc(653px*var(--escala)); left:calc(37px*var(--escala)); width:calc(280px*var(--escala)); }
-    #bancolombia { top:calc(557px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
-    #disponible  { top:calc(702px*var(--escala)); left:calc(40px*var(--escala)); width:calc(280px*var(--escala)); }
-    #verPantallaCompleta {
-      display:none; position:fixed; bottom:20px; left:50%;
-      transform:translateX(-50%); padding:12px 20px;
-      font-size:16px; background:#1e88e5; color:#fff;
-      border:none; border-radius:12px; font-weight:bold; z-index:9999;
-      font-family: 'Manrope', sans-serif;
-    }
-    #cargando {
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%);
-      background:rgba(0,0,0,.8); color:#fff;
-      padding:20px; border-radius:10px;
-      font-size:18px; font-weight:bold; display:none; z-index:9999;
-      font-family: 'Manrope', sans-serif;
-    }
+    /* Nombre ILIMITADO (multilínea, no mueve a otros) */
+    #nombre{top:415px;left:37px;width:280px;white-space:normal;word-break:break-word;overflow:visible}
+    #valor{top:467px;left:37px;width:280px}
+    #fecha{top:510px;left:40px;width:280px}
+    #nequi{top:607px;left:37px;width:280px}
+    #referencia{top:653px;left:37px;width:280px}
+    #bancolombia{top:557px;left:40px;width:280px}
+    #disponible{top:702px;left:40px;width:280px}
+
+    /* Botón “Ver en pantalla completa” (oculto porque entramos auto) */
+    #verPantallaCompleta{display:none}
   </style>
 </head>
 <body>
+  <!-- ===== Formulario ===== -->
   <div class="formulario" id="pantalla">
     <div class="titulo">Envía a Bancolombia</div>
     <div class="info">¡Los envíos a Bancolombia <strong>no tienen costo y llegan de una!</strong></div>
+
     <input type="text" id="input-nombre" class="input-campo" placeholder="Nombre completo (2 nombres y 2 apellidos)">
     <div id="input-tipo" class="simulador">Tipo de cuenta</div>
     <input type="text" id="input-nequi" class="input-campo" placeholder="Número Bancolombia (15 dígitos)" maxlength="15">
     <input type="text" id="input-valor" class="input-campo" placeholder="Valor en $">
+
     <div class="favorito">
       <span>☆ Recordar en favoritos</span>
       <input type="checkbox">
     </div>
+
     <div class="fuente">Escoge de donde saldrá la plata</div>
     <div class="fuente-opcion">
-      <img src="https://img.icons8.com/ios-filled/50/da0081/grid-2.png" alt="icono">
-      Disponible
+      <img src="https://img.icons8.com/ios-filled/50/da0081/grid-2.png" alt="icono"> Disponible
     </div>
+
     <button id="generar" class="boton">Generar Comprobante</button>
   </div>
-  <div class="container" id="captura">
-    <img src="comprobante_base.png" alt="Fondo" id="imagen-fondo">
-    <input type="text" id="nombre" class="input-overlay" readonly>
-    <input type="text" id="valor" class="input-overlay" readonly>
-    <div id="fecha" class="input-overlay"></div>
-    <input type="text" id="nequi" class="input-overlay" readonly>
-    <input type="text" id="referencia" class="input-overlay" readonly>
-    <div id="bancolombia" class="input-overlay">Bancolombia</div>
-    <div id="disponible" class="input-overlay">Disponible</div>
+
+  <!-- ===== Animación diamantes (BLANCO) ===== -->
+  <div id="anim" class="finish-overlay" aria-hidden="true">
+    <div class="diamantes" aria-hidden="true">
+      <div class="diamond left"></div>
+      <div class="diamond right"></div>
+      <div class="spark s1"></div>
+      <div class="spark s2"></div>
+      <div class="spark s3"></div>
+    </div>
   </div>
+
+  <!-- ===== Visor del comprobante (NEGRO) ===== -->
+  <div id="captura" class="viewer" aria-hidden="true">
+    <div class="stage" id="stage">
+      <img class="bg" id="imagen-fondo" src="comprobante_base.png" alt="Fondo">
+      <!-- CAPAS FIJAS -->
+      <div id="nombre" class="input-overlay"></div>  <!-- ilimitado -->
+      <input type="text" id="valor" class="input-overlay" readonly>
+      <div id="fecha" class="input-overlay"></div>
+      <input type="text" id="nequi" class="input-overlay" readonly>
+      <input type="text" id="referencia" class="input-overlay" readonly>
+      <div id="bancolombia" class="input-overlay">Bancolombia</div>
+      <div id="disponible" class="input-overlay">Disponible</div>
+      <div class="bottom-edge-mask"></div>
+    </div>
+  </div>
+
+  <!-- Botón oculto (requeriste auto-FS) -->
   <button id="verPantallaCompleta">Ver en Pantalla Completa</button>
-  <div id="cargando">Cargando...</div>
+
   <script>
+    /* ====== UI simple ====== */
     document.getElementById('input-tipo').addEventListener('click', () => {
-      const opciones = ['Ahorros', 'Corriente'];
-      const actual = document.getElementById('input-tipo').textContent.trim();
-      const siguiente = opciones[(opciones.indexOf(actual) + 1) % opciones.length] || opciones[0];
-      document.getElementById('input-tipo').textContent = siguiente;
+      const opciones=['Ahorros','Corriente'];
+      const el=document.getElementById('input-tipo');
+      const actual=el.textContent.trim();
+      const siguiente=opciones[(opciones.indexOf(actual)+1)%opciones.length]||opciones[0];
+      el.textContent=siguiente;
     });
 
-    document.getElementById('generar').addEventListener('click', async () => {
-      if (!validarEntradas()) return;
-      document.getElementById('cargando').style.display = 'block';
-      await (document.fonts?.ready ?? new Promise(r => setTimeout(r,1000)));
-      setTimeout(() => {
-        document.getElementById('cargando').style.display = 'none';
-        const cont = document.getElementById('captura');
-        const escala = Math.min(window.innerWidth/390,1);
-        cont.style.setProperty('--escala', escala);
-        document.getElementById('pantalla').style.display = 'none';
-        cont.style.display = 'block';
-        document.getElementById('nombre').value = document.getElementById('input-nombre').value;
-        document.getElementById('valor').value = formatValor(document.getElementById('input-valor').value);
-        generarFecha();
-        document.getElementById('nequi').value = document.getElementById('input-nequi').value;
-        generarReferencia();
-        document.getElementById('verPantallaCompleta').style.display = 'block';
-      },1000);
-    });
+    /* ====== Refs ====== */
+    const pantalla = document.getElementById('pantalla');
+    const anim     = document.getElementById('anim');
+    const captura  = document.getElementById('captura');
+    const stage    = document.getElementById('stage');
+    const imgBase  = document.getElementById('imagen-fondo');
 
-    document.getElementById('verPantallaCompleta').addEventListener('click', () => {
-      const cont = document.getElementById('captura');
-      const btn  = document.getElementById('verPantallaCompleta');
-      if (!document.fullscreenElement) {
-        (cont.requestFullscreen?.() || cont.webkitRequestFullscreen?.());
-        const escala = Math.min(window.innerWidth/390,1);
-        cont.style.transform = `scale(${1/escala})`;
-        btn.textContent = "Salir de Pantalla Completa";
-      } else {
-        (document.exitFullscreen?.() || document.webkitExitFullscreen?.());
-        cont.style.transform = 'scale(1)';
-        btn.textContent = "Ver en Pantalla Completa";
+    const inNombre = document.getElementById('input-nombre');
+    const inNequi  = document.getElementById('input-nequi');
+    const inValor  = document.getElementById('input-valor');
+
+    const BASE_W = 390;
+    let BASE_H = null;
+    let inFS   = false;
+
+    function setBaseHeight(){
+      if(imgBase.naturalWidth && imgBase.naturalHeight){
+        BASE_H = BASE_W * (imgBase.naturalHeight / imgBase.naturalWidth);
       }
-    });
+    }
+    if (imgBase.complete) setBaseHeight();
+    imgBase.addEventListener('load', setBaseHeight);
 
-    document.addEventListener('fullscreenchange', () => {
-      const cont = document.getElementById('captura');
-      const btn  = document.getElementById('verPantallaCompleta');
-      if (!document.fullscreenElement) {
-        cont.style.transform = 'scale(1)';
-        btn.textContent = "Ver en Pantalla Completa";
-      }
-    });
-
-    function validarEntradas() {
-      const n  = document.getElementById('input-nombre').value.trim();
-      const ne = document.getElementById('input-nequi').value.trim();
-      const v  = document.getElementById('input-valor').value.trim();
-      if (!n||!ne||!v) { alert("Todos los campos son obligatorios."); return false; }
-      if (isNaN(v.replace(/\D/g,''))) { alert("El valor debe ser un número válido."); return false; }
-      if (ne.length<10||ne.length>15) { alert("El número debe tener entre 10 y 15 dígitos."); return false; }
+    /* ====== Helpers ====== */
+    function generarFecha(){
+      const f=new Date();
+      const meses=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+      const dia=String(f.getDate()).padStart(2,'0');
+      const mes=meses[f.getMonth()];
+      const anio=f.getFullYear();
+      let h=f.getHours(), m=String(f.getMinutes()).padStart(2,'0'), ap=h>=12?'p. m.':'a. m.'; h=h%12||12;
+      document.getElementById('fecha').innerHTML=`${dia} de ${mes} de ${anio} a las ${h}:${m} ${ap}`;
+    }
+    function formatValor(v){
+      v=String(v).replace(/\D/g,'');
+      return v?`$ ${v.replace(/\B(?=(\d{3})+(?!\d))/g,'.')},00`:"$ 0,00";
+    }
+    function validar(){
+      const n=inNombre.value.trim(), ne=inNequi.value.trim(), v=inValor.value.trim();
+      if(!n||!ne||!v){ alert("Todos los campos son obligatorios."); return false; }
+      if(isNaN(v.replace(/\D/g,''))){ alert("El valor debe ser un número válido."); return false; }
+      if(ne.replace(/\D/g,'').length<10 || ne.replace(/\D/g,'').length>15){ alert("El número debe tener entre 10 y 15 dígitos."); return false; }
       return true;
     }
-    function generarFecha() {
-      const f=new Date(), d=f.getDate();
-      const m=f.toLocaleString('es-ES',{month:'long'});
-      let h=f.getHours(), min=f.getMinutes().toString().padStart(2,'0');
-      const ap = h>=12?'P. M.':'A. M.'; h=h%12||12;
-      document.getElementById('fecha').innerHTML = `${d} de ${m.charAt(0).toUpperCase()+m.slice(1)} de ${f.getFullYear()}, ${h}:${min} ${ap}`;
+
+    /* ====== Fullscreen & escala ====== */
+    async function enterFS(el){
+      const req=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
+      if(req){ try{ await req.call(el); }catch{} }
     }
-    function generarReferencia() {
-      document.getElementById('referencia').value = 'M' + Math.floor(1e7 + Math.random()*9e7);
+    async function exitFS(){
+      if(document.fullscreenElement){ try{ await document.exitFullscreen(); }catch{} }
     }
-    function formatValor(v) {
-      v = v.replace(/\D/g,'');
-      return v ? `$ ${v.replace(/\B(?=(\d{3})+(?!\d))/g,'.')},00` : "$ 0,00";
+    function scaleToFullscreen(){
+      const vw=window.innerWidth, vh=window.innerHeight;
+      const hBase = BASE_H || BASE_W*2;
+      const s=Math.min(vw/BASE_W, vh/hBase);
+      stage.style.transform=`translate(-50%,-50%) scale(${s})`;
     }
+    function scaleToNormal(){
+      stage.style.transform='translate(-50%,-50%) scale(1)';
+    }
+
+    document.addEventListener('fullscreenchange', ()=>{
+      inFS = !!document.fullscreenElement;
+      if(inFS){ scaleToFullscreen(); }
+      else{
+        // Si se sale de FS mientras el visor está abierto -> volver directo al formulario
+        if(captura.style.display==='block') irAlFormulario();
+      }
+    });
+    window.addEventListener('resize', ()=>{ if(inFS) scaleToFullscreen(); });
+    window.addEventListener('orientationchange', ()=>{ if(inFS) setTimeout(scaleToFullscreen,50); });
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ exitFS(); } });
+
+    /* ====== Flujo principal ====== */
+    document.getElementById('generar').addEventListener('click', async ()=>{
+      if(!validar()) return;
+
+      // Cargar datos en capas FIJAS
+      document.getElementById('nombre').textContent = inNombre.value.trim(); // ilimitado
+      document.getElementById('valor').value        = formatValor(inValor.value.trim());
+      document.getElementById('nequi').value        = inNequi.value.trim();
+      document.getElementById('referencia').value   = 'M' + Math.floor(1e7 + Math.random()*9e7);
+      generarFecha();
+
+      try{ history.pushState({screen:'comprobante'},''); }catch{}
+
+      // Animación blanca
+      pantalla.style.display='none';
+      anim.style.display='flex';
+      anim.setAttribute('aria-hidden','false');
+
+      // Tras la animación: mostrar visor y entrar a FS automáticamente
+      setTimeout(async ()=>{
+        anim.style.display='none';
+        anim.setAttribute('aria-hidden','true');
+
+        captura.style.display='block';
+        document.body.style.background='#000';
+        document.body.style.overflow='hidden';
+
+        await enterFS(captura);
+        if(!document.fullscreenElement){
+          // Fallback si el navegador bloquea FS: llenamos pantalla por escala
+          inFS = true;
+          scaleToFullscreen();
+        }
+      }, 1000);
+    });
+
+    // Botón/gesto atrás del SO -> volver al formulario
+    window.addEventListener('popstate', ()=>{ volverAlFormulario(); });
+
+    async function volverAlFormulario(){
+      await exitFS(); // fullscreenchange hará irAlFormulario(); si no, forzamos:
+      if(!document.fullscreenElement){ irAlFormulario(); }
+    }
+    function irAlFormulario(){
+      captura.style.display='none';
+      document.body.style.background='#fff';
+      document.body.style.overflow='auto';
+      pantalla.style.display='flex';
+      inFS=false; scaleToNormal();
+      try{ history.replaceState({screen:'form'},''); }catch{}
+    }
+
+    // Estado inicial
+    try{ history.replaceState({screen:'form'},''); }catch{}
   </script>
 </body>
 </html>
